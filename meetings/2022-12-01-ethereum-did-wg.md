@@ -46,7 +46,7 @@ Notes:
   - Messaging
     - On use cases, the main use case I am interested in is messaging. Specifically enabling an EVM wallet to use DIDComm Messaging, which basically comes down to allowing encryption keys to be added to keyAgreements. There is no standard around attaching encryption keys to an ETH address.
   - Support to account abstraction was also mentioned.
-- Stephan Baur brought many times the importance of keeping the DID method name and evolving from the existing.
+- Stephan Baur brought the importance of evolving from the existing DID method, in terms of functionality upgrades.
 - Need to have EF involved and have them educated about the DID efforts.
 - Bounties and grants
   - Important for smart contract reviews
