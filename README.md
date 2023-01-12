@@ -7,3 +7,12 @@ Our objective is to collaboratively design and come up with a new did method pro
 ## Background: 
 
 The project idea was started at the Internet Identity Workshop in November 2022. Please see meetings page for additional updates. https://github.com/veramolabs/did-eth/tree/main/meetings
+
+
+## Joining the discussion
+
+We are currently organizing our work in the Veramo Discord which you can join here: https://discord.gg/MTeTAwSYe7
+
+Asynchrounous discussions are happing in the discord channel [ethr-did-dao](https://discord.com/channels/878293684620234752/917857852440330360) and in this repos [discusson forum](https://github.com/veramolabs/did-eth/discussions).
+
+Additionally we hold a weekly meeting **every thursday at 09:00 AM - 10:00 AM (GMT-08:00)** in the Veramo discord voice channel **ethr-did-dao-live**.
