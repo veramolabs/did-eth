@@ -29,18 +29,18 @@ contract didETH {
     /// @param owner The address of the owner
     /// @param documentId the id of the document
     /// @param info the string of the document info
-    function createDID(
+    function createDIDWithPointer(
         address owner,
         int256 documentId,
         string calldata info
     ) external {
-        DocumentStorage.Storage storage ns = DocumentStorage.getStorage();
         didETHStorage.Storage storage s = didETHStorage.getStorage();
         address idProxyAddress = s.idProxyAddress;
-
-        ns.documents[idProxyAddress][documentId].owner = owner;
-        ns.documents[idProxyAddress][documentId].info = info;
-        ns.documents[idProxyAddress][documentId].version = 1;
+        mapping(int256 => Document) storage ns = DocumentStorage
+            .getStoragePointer(idProxyAddress);
+        ns[documentId].owner = owner;
+        ns[documentId].info = info;
+        ns[documentId].version = 1;
 
         emit DIDCreated(owner, documentId);
     }
@@ -48,14 +48,18 @@ contract didETH {
     /// @notice updates a DID document
     /// @param documentId the id of the document
     /// @param info the string of the document info
-    function updateDidInfo(int256 documentId, string calldata info) external {
-        DocumentStorage.Storage storage ns = DocumentStorage.getStorage();
+    function updateDidInfoWithPointer(
+        int256 documentId,
+        string calldata info
+    ) external {
         didETHStorage.Storage storage s = didETHStorage.getStorage();
         address idProxyAddress = s.idProxyAddress;
-        address owner = ns.documents[idProxyAddress][documentId].owner;
+        mapping(int256 => Document) storage ns = DocumentStorage
+            .getStoragePointer(idProxyAddress);
+        address owner = ns[documentId].owner;
         require(msg.sender == owner, "Only document owner");
 
-        ns.documents[idProxyAddress][documentId].info = info;
+        ns[documentId].info = info;
 
         emit DIDUpdatedInfo(documentId);
     }
@@ -63,16 +67,18 @@ contract didETH {
     /// @notice updates a DID document owner
     /// @param documentId the id of the document
     /// @param newOwner the adress of the document info
-    function updateDidOwner(int256 documentId, address newOwner) external {
-        DocumentStorage.Storage storage ns = DocumentStorage.getStorage();
+    function updateDidOwnerWithPointer(
+        int256 documentId,
+        address newOwner
+    ) external {
         didETHStorage.Storage storage s = didETHStorage.getStorage();
         address idProxyAddress = s.idProxyAddress;
-
-        address owner = ns.documents[idProxyAddress][documentId].owner;
-
+        mapping(int256 => Document) storage ns = DocumentStorage
+            .getStoragePointer(idProxyAddress);
+        address owner = ns[documentId].owner;
         require(msg.sender == owner, "Only document owner");
 
-        ns.documents[idProxyAddress][documentId].owner = newOwner;
+        ns[documentId].owner = newOwner;
 
         emit DIDUpdatedOwner(documentId, newOwner);
     }

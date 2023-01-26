@@ -49,7 +49,7 @@ describe("DIDEth", function () {
         await expect(
           localDidEthInstance
             .connect(nonAdmin)
-            .createDID(nonAdmin.address, docId, "test")
+            .createDIDWithPointer(nonAdmin.address, docId, "test")
         )
           .to.emit(localDidEthInstance, "DIDCreated")
           .withArgs(nonAdmin.address, docId);
@@ -61,7 +61,9 @@ describe("DIDEth", function () {
         const docId = ethers.BigNumber.from(500);
 
         await expect(
-          localDidEthInstance.connect(user1).updateDidInfo(docId, "test2")
+          localDidEthInstance
+            .connect(user1)
+            .updateDidInfoWithPointer(docId, "test2")
         ).to.be.revertedWith("Only document owner");
       });
     });
@@ -71,7 +73,9 @@ describe("DIDEth", function () {
         const docId = ethers.BigNumber.from(500);
 
         await expect(
-          localDidEthInstance.connect(nonAdmin).updateDidInfo(docId, "test2")
+          localDidEthInstance
+            .connect(nonAdmin)
+            .updateDidInfoWithPointer(docId, "test2")
         )
           .to.emit(localDidEthInstance, "DIDUpdatedInfo")
           .withArgs(docId);
@@ -172,7 +176,7 @@ describe("Update resolver stuff", function () {
       await expect(
         localDidEthFacet
           .connect(nonAdmin)
-          .createDID(nonAdmin.address, docId, "test")
+          .createDIDWithPointer(nonAdmin.address, docId, "test")
       )
         .to.emit(localDidEthFacet, "DIDCreated")
         .withArgs(nonAdmin.address, docId);
@@ -195,11 +199,13 @@ describe("Update resolver stuff", function () {
       const docId = ethers.BigNumber.from(500);
 
       await expect(
-        localDidEthFacet.connect(nonAdmin).updateDidInfo(docId, "new-info")
+        localDidEthFacet
+          .connect(nonAdmin)
+          .updateDidInfoWithPointer(docId, "new-info")
       ).to.emit(localDidEthFacet, "DIDUpdatedInfo");
     });
 
-    it("The document version should be corrent", async () => {
+    it("The document info should be correct", async () => {
       const docId = ethers.BigNumber.from(500);
       const didETHProxyId = await localDidEthFacet
         .connect(nonAdmin)
@@ -251,11 +257,13 @@ describe("Update resolver stuff", function () {
     it("Upgrade our DID version", async () => {
       const docId = ethers.BigNumber.from(500);
       await expect(
-        await localDidEthV2Facet.connect(nonAdmin).upgradeDidVersion(docId)
+        await localDidEthV2Facet
+          .connect(nonAdmin)
+          .upgradeDidVersionWithPointer(docId)
       ).to.emit(localDidEthV2Facet, "DIDVersionUpgraded");
     });
 
-    it("The document version should be corrent", async () => {
+    it("The document version should be correct", async () => {
       const docId = ethers.BigNumber.from(500);
       const didETHProxyId = await localDidEthV2Facet
         .connect(nonAdmin)
@@ -268,7 +276,7 @@ describe("Update resolver stuff", function () {
       expect(docVersion).to.be.equal(2);
     });
 
-    it("The document version should be corrent", async () => {
+    it("The document info should be correct", async () => {
       const docId = ethers.BigNumber.from(500);
       const didETHProxyId = await localDidEthV2Facet
         .connect(nonAdmin)
@@ -279,6 +287,18 @@ describe("Update resolver stuff", function () {
         docId
       );
       expect(docInfo).to.be.equal("new-info");
+    });
+
+    it("Update the DID info through the diamond contract - should fail", async () => {
+      const docId = ethers.BigNumber.from(500);
+
+      await expect(
+        localDidEthInstance
+          .connect(nonAdmin)
+          .updateDidInfoWithPointer(docId, "even-newer-info")
+      )
+        .to.emit(localDidEthFacet, "DIDUpdatedInfo")
+        .to.be.revertedWith("Only document owner");
     });
   });
 });

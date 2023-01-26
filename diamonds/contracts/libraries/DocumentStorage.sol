@@ -20,5 +20,19 @@ library DocumentStorage {
             s.slot := slot
         }
     }
+
+    /// @notice Gets the mapping for a mapping
+    /// @param idProxyAddress The address of the proxy associated with the document
+    function getStoragePointer(
+        address idProxyAddress
+    ) internal view returns (mapping(int256 => Document) storage s) {
+        Storage storage strg;
+        bytes32 slot = DOCUMENTS_STORAGE_SLOT;
+        assembly {
+            strg.slot := slot
+        }
+        s = strg.documents[idProxyAddress];
+    }
+
     /* solhint-enable no-inline-assembly */
 }
