@@ -126,7 +126,6 @@ describe("Remove resolver stuff", function () {
     let localDocumentsFacet: Documents;
     before(async () => {
       const deployedStuff = await initializeUpdate(admin);
-
       localDidRegistryInstance = deployedStuff.localDidRegistryInstance;
       localDidEthFacet = deployedStuff.localDidEthFacet;
       didEthContractSelectors = deployedStuff.didEthContractSelectors;

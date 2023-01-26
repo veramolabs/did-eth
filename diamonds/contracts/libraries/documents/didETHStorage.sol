@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 /// @title didETH Document Storage
-/// @notice Storage of the did-eth contract
+/// @notice Storage of the did-eth documents
 library didETHStorage {
     bytes32 private constant DID_ETH_STORAGE_SLOT =
         keccak256("DocumentStorage.did-eth.storage");
