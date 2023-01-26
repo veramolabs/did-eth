@@ -37,7 +37,7 @@ library LibResolver {
         resolver = s.idProxyAddress;
     }
 
-    // Naughty function, just to show an example.
+    // This is what Resolvers will call to get their storage
     function getIntendedResolverStorage()
         internal
         view
