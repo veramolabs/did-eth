@@ -67,7 +67,7 @@ describe("DIDEth", function () {
     });
 
     context("Update DID - Succeed", () => {
-      it("Should fail because not document owner", async () => {
+      it("Should succeed because document owner", async () => {
         const docId = ethers.BigNumber.from(500);
 
         await expect(
@@ -191,6 +191,27 @@ describe("Update resolver stuff", function () {
       expect(docVersion).to.be.equal(1);
     });
 
+    it("Update the DID info - should succeed", async () => {
+      const docId = ethers.BigNumber.from(500);
+
+      await expect(
+        localDidEthFacet.connect(nonAdmin).updateDidInfo(docId, "new-info")
+      ).to.emit(localDidEthFacet, "DIDUpdatedInfo");
+    });
+
+    it("The document version should be corrent", async () => {
+      const docId = ethers.BigNumber.from(500);
+      const didETHProxyId = await localDidEthFacet
+        .connect(nonAdmin)
+        .getStorageAddress();
+
+      const docInfo = await localDocumentsFacet.getDocumentInfo(
+        didETHProxyId,
+        docId
+      );
+      expect(docInfo).to.be.equal("new-info");
+    });
+
     it("Create the the new DID Resolver", async () => {
       const didETHV2ContractFactory = await ethers.getContractFactory(
         "didETHV2"
@@ -208,7 +229,7 @@ describe("Update resolver stuff", function () {
       expect(localDidEthV2Instance.address).to.exist;
     });
 
-    it("Upgrade the new DID Resolver", async () => {
+    it("Upgrade to the new DID Resolver", async () => {
       await expect(
         await localDidRegistryInstance
           .connect(admin)
@@ -227,7 +248,7 @@ describe("Update resolver stuff", function () {
       );
     });
 
-    it("Upgrade our DID", async () => {
+    it("Upgrade our DID version", async () => {
       const docId = ethers.BigNumber.from(500);
       await expect(
         await localDidEthV2Facet.connect(nonAdmin).upgradeDidVersion(docId)
@@ -245,6 +266,19 @@ describe("Update resolver stuff", function () {
         docId
       );
       expect(docVersion).to.be.equal(2);
+    });
+
+    it("The document version should be corrent", async () => {
+      const docId = ethers.BigNumber.from(500);
+      const didETHProxyId = await localDidEthV2Facet
+        .connect(nonAdmin)
+        .getStorageAddress();
+
+      const docInfo = await localDocumentsFacet.getDocumentInfo(
+        didETHProxyId,
+        docId
+      );
+      expect(docInfo).to.be.equal("new-info");
     });
   });
 });
