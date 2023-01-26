@@ -10,7 +10,7 @@ import {Document} from "../../shared/Types.sol";
 import "@solidstate/contracts/access/access_control/AccessControlInternal.sol";
 
 /// @title DID
-/// @notice Contract that represents the DID Document
+/// @notice Contract that represents the DID Document storage
 contract didETH {
     bytes32 private constant Create_TYPEHASH =
         keccak256("CreateDID(address owner, int256 documentId, string info)");
