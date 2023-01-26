@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import "../../Eip712/Eip712CheckerInternal.sol";
 import "../../libraries/DocumentStorage.sol";
+import "../../libraries/LibResolver.sol";
 import "../../libraries/documents/didETHStorage.sol";
 
 import {Document} from "../../shared/Types.sol";
@@ -35,10 +36,8 @@ contract didETHV2 {
         int256 documentId,
         string calldata info
     ) external {
-        didETHStorage.Storage storage s = didETHStorage.getStorage();
-        address idProxyAddress = s.idProxyAddress;
-        mapping(int256 => Document) storage ns = DocumentStorage
-            .getStoragePointer(idProxyAddress);
+        mapping(int256 => Document) storage ns = LibResolver
+            .getIntendedResolverStorage();
         ns[documentId].owner = owner;
         ns[documentId].info = info;
         ns[documentId].version = 1;
@@ -53,10 +52,8 @@ contract didETHV2 {
         int256 documentId,
         string calldata info
     ) external {
-        didETHStorage.Storage storage s = didETHStorage.getStorage();
-        address idProxyAddress = s.idProxyAddress;
-        mapping(int256 => Document) storage ns = DocumentStorage
-            .getStoragePointer(idProxyAddress);
+        mapping(int256 => Document) storage ns = LibResolver
+            .getIntendedResolverStorage();
         address owner = ns[documentId].owner;
         require(msg.sender == owner, "Only document owner");
 
@@ -72,10 +69,8 @@ contract didETHV2 {
         int256 documentId,
         address newOwner
     ) external {
-        didETHStorage.Storage storage s = didETHStorage.getStorage();
-        address idProxyAddress = s.idProxyAddress;
-        mapping(int256 => Document) storage ns = DocumentStorage
-            .getStoragePointer(idProxyAddress);
+        mapping(int256 => Document) storage ns = LibResolver
+            .getIntendedResolverStorage();
         address owner = ns[documentId].owner;
         require(msg.sender == owner, "Only document owner");
 
@@ -87,10 +82,8 @@ contract didETHV2 {
     /// @notice updates a DID version
     /// @param documentId the id of the document
     function upgradeDidVersionWithPointer(int256 documentId) external {
-        didETHStorage.Storage storage s = didETHStorage.getStorage();
-        address idProxyAddress = s.idProxyAddress;
-        mapping(int256 => Document) storage ns = DocumentStorage
-            .getStoragePointer(idProxyAddress);
+        mapping(int256 => Document) storage ns = LibResolver
+            .getIntendedResolverStorage();
         address owner = ns[documentId].owner;
         require(msg.sender == owner, "Only document owner");
         require(
