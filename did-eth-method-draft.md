@@ -34,7 +34,7 @@ or the corresponding HEX-encoded Ethereum address on the target network, prefixe
     network-chain-id = "0x" *HEXDIG
     ethereum-address = "0x" 40*HEXDIG
     public-key-hex = "0x" 66*HEXDIG
-    ens-name = website ".eth"
+    ens-name = [optional subdomain] + [domain name] + [top level domain supported by ENS]
 
 The `ethereum-address` or `public-key-hex` or `ens-name` are case-insensitive, however, the corresponding `blockchainAccountId`
 MAY be represented using
@@ -44,9 +44,10 @@ in the resulting DID document.
 Note, if no public Ethereum network was specified, it is assumed that the DID is anchored on the Ethereum mainnet by
 default. This means the following DIDs will resolve to equivalent DID Documents:
 
-    did:ethr:mainnet:0xb9c5714089478a327f09197987f16f9e5d936e8a
-    did:ethr:0x1:0xb9c5714089478a327f09197987f16f9e5d936e8a
-    did:ethr:0xb9c5714089478a327f09197987f16f9e5d936e8a
+    did:eth:mainnet:0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+    did:eth:0x1:0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+    did:eth:0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+    did:eth:vitalik.eth
 
 If the identifier is a `public-key-hex`:
 
