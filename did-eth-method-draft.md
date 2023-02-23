@@ -34,6 +34,8 @@ Examples:
   * Hedera: did:eth:eip155:296:0xa0ae58da58dfa46fa55c3b86545e7065f90ff011
   * Sepiola Testnet: did:eth:eip155:11155111:0xb9c5714089478a327f09197987f16f9e5d936e8a
 
+There is no "default" representation reserved for Ethereum mainnet (or any other chain). All identifiers MUST include the [CAIP-2](https://chainagnostic.org/CAIPs/caip-2) namespace and chain_id explicitly
+
 ### Examples
 
 
