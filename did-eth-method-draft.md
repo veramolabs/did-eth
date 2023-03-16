@@ -6,7 +6,7 @@
 
 ## Introduction
 
-`did-eth` is intended to be a modern DID method for the Ethereum ecosystem. It serves as a successor to `did-ethr` in this regard, and should be fully [DID-core](https://www.w3.org/TR/did-core/) compliant, fully supporting all possible verification methods and services. This DID method should be resolvable both off-chain (by querying for and processing EVM events) as well as on-chain (by processing EVM state directly from within a smart contract), although it should be considered acceptable if the on-chain resolution resolves a DID Document that contains only a subset of verification methods or services, as specified later in this document.
+`did-eth` is intended to be a modern DID method for the Ethereum ecosystem. It serves as a successor to `did-ethr` in this regard, and should be fully [DID-core](https://www.w3.org/TR/did-core/) compliant, fully supporting all possible verification methods and services. This DID method should be resolvable both off-chain (by querying for and processing EVM events) as well as on-chain (by processing EVM state directly from within a smart contract), although it should be considered acceptable if the on-chain resolution involves only a subset of verification methods or services, as specified later in this document.
 
 ### Problem Statement
 
