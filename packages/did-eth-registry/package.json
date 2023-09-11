@@ -66,6 +66,8 @@
     "build:sol": "hardhat compile",
     "build": "yarn build:sol && yarn build:js",
     "test": "hardhat test",
+    "prettier:check": "prettier --check '(contracts|test|script)/**.sol'",
+    "prettier:fix": "prettier --write '(contracts|test|script)/**.sol'",
     "lint:js": "npx eslint '**/*.{js,ts}' --fix",
     "lint:sol": "npx solhint 'contracts/**/*.sol' --fix",
     "lint": "yarn lint:sol && yarn lint:js",
