@@ -76,14 +76,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.changeOwner(SIGNER, SIGNER2);
         vm.expectEmit();
         emit DIDAttributeChanged(SIGNER, "key", "value", 1 weeks + 1, block.number);
-        (uint8 v, bytes32 r, bytes32 s) = signAttribute(
-            SIGNER,
-            SIGNER2,
-            address(registry),
-            "key",
-            "value",
-            PRIVATE_KEY2
-        );
+        (uint8 v, bytes32 r, bytes32 s) = signAttribute(SIGNER, address(registry), "key", "value", PRIVATE_KEY2);
         registry.setAttributeSigned(SIGNER, v, r, s, "key", "value", 1 weeks);
     }
 
@@ -216,7 +209,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.setAttribute(SIGNER, "key", "value", 1 weeks);
         vm.prank(SIGNER);
         registry.changeOwner(SIGNER, SIGNER2);
-        (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER2, address(registry), "key", "value", PRIVATE_KEY2);
+        (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, address(registry), "key", "value", PRIVATE_KEY2);
         vm.expectEmit();
         emit DIDAttributeChanged(SIGNER, "key", "value", 0, block.number);
         registry.revokeAttributeSigned(SIGNER, v, r, s, "key", "value");
@@ -225,7 +218,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
     /**
      * @dev Sign data with a private key
      * @param _identity Identity address
-     * @param _delegate Delegate address
      * @param _registry DID Registry address
      * @param _privateKey Private key
      * @param _message Message to sign
@@ -235,7 +227,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
      */
     function signData(
         address _identity,
-        address _delegate,
         address _registry,
         bytes memory _privateKey,
         bytes memory _message
@@ -248,7 +239,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
             bytes32 s
         )
     {
-        address idOwner = registry.identityOwner(_delegate);
+        address idOwner = registry.identityOwner(_identity);
         uint256 ownerNonce = registry.nonce(idOwner);
         return VmDigest.signData(vm, _identity, _registry, _privateKey, _message, ownerNonce);
     }
@@ -280,38 +271,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         )
     {
         bytes memory message = abi.encodePacked(bytes("setAttribute"), _key, _value, uint256(1 weeks));
-        return signData(_identity, _identity, _registry, _privateKey, message);
-    }
-
-    /**
-     * @dev Sign attribute with a private key
-     * @param _identity Identity address
-     * @param _registry DID Registry address
-     * @param _key Attribute key
-     * @param _value Attribute value
-     * @param _privateKey Private key
-     * @return v Signature v
-     * @return r Signature r
-     * @return s Signature s
-     */
-    function signAttribute(
-        address _identity,
-        address _delegate,
-        address _registry,
-        bytes32 _key,
-        bytes memory _value,
-        bytes memory _privateKey
-    )
-        internal
-        view
-        returns (
-            uint8 v,
-            bytes32 r,
-            bytes32 s
-        )
-    {
-        bytes memory message = abi.encodePacked(bytes("setAttribute"), _key, _value, uint256(1 weeks));
-        return signData(_identity, _delegate, _registry, _privateKey, message);
+        return signData(_identity, _registry, _privateKey, message);
     }
 
     /**
@@ -341,37 +301,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
         )
     {
         bytes memory message = abi.encodePacked(bytes("revokeAttribute"), _key, _value);
-        return signData(_identity, _identity, _registry, _privateKey, message);
-    }
-
-    /**
-     * @dev Sign revoke with a private key
-     * @param _identity Identity address
-     * @param _registry DID Registry address
-     * @param _key Attribute key
-     * @param _value Attribute value
-     * @param _privateKey Private key
-     * @return v Signature v
-     * @return r Signature r
-     * @return s Signature s
-     */
-    function signRevoke(
-        address _identity,
-        address _delegate,
-        address _registry,
-        bytes32 _key,
-        bytes memory _value,
-        bytes memory _privateKey
-    )
-        internal
-        view
-        returns (
-            uint8 v,
-            bytes32 r,
-            bytes32 s
-        )
-    {
-        bytes memory message = abi.encodePacked(bytes("revokeAttribute"), _key, _value);
-        return signData(_identity, _delegate, _registry, _privateKey, message);
+        return signData(_identity, _registry, _privateKey, message);
     }
 }

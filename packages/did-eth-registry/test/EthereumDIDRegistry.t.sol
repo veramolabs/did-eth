@@ -43,8 +43,8 @@ contract EthereumDIDRegistryTest is Test {
         vm.prank(owner);
         registry.changeOwner(owner, newOwner);
         vm.prank(newOwner);
-        registry.changeOwner(newOwner, newOwner2);
-        assertEq(registry.identityOwner(owner), newOwner, "should change owner");
+        registry.changeOwner(owner, newOwner2);
+        assertEq(registry.identityOwner(owner), newOwner2, "should change owner twice");
     }
 
     function testChangeOwnerOriginalAddressIsBadActor() public {

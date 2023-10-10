@@ -44,14 +44,13 @@ library VmDigest {
     }
 
     /**
-     * @dev Convert bytes to uint256
+     * @dev Convert bytes to uint256.  This is intended for test purposes only.
      * @param _bytes Bytes to convert
      * @return uint256
      */
     function toUint256(bytes memory _bytes) internal pure returns (uint256) {
-        require(_bytes.length >= 32, "toUint256_outOfBounds");
+        require(_bytes.length <= 32, "toUint256_outOfBounds");
         uint256 result;
-        // for test purposes only
         // solhint-disable-next-line no-inline-assembly
         assembly {
             result := mload(add(_bytes, 0x20))

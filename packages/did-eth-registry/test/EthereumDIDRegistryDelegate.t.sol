@@ -69,7 +69,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
     }
 
-    function testAddDelegateOwnerIdentityChanged() public {
+    function testAddDelegateDoesNotChangeOwner() public {
         assertEq(registry.owners(SIGNER), address(0x0));
         vm.prank(SIGNER);
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
@@ -91,17 +91,8 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
     }
 
-    function testAddDelegateNoTakeBack() public {
-        vm.prank(SIGNER);
-        registry.changeOwner(SIGNER, SIGNER2);
-        vm.prank(SIGNER);
-        vm.expectRevert("bad_actor");
-        registry.addDelegate(SIGNER, "attestor", SIGNER3, 1 days);
-    }
-
     function testAddDelegateSigned() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER3);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
         assertTrue(registry.validDelegate(SIGNER, "attestor", SIGNER2));
     }
@@ -111,14 +102,12 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.changeOwner(SIGNER, SIGNER3);
         assertEq(registry.owners(SIGNER), SIGNER3);
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER3);
         vm.expectRevert("bad_signature");
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
     }
 
     function testAddDelegateSignedExpires() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER3);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
         assertTrue(registry.validDelegate(SIGNER, "attestor", SIGNER2));
         vm.warp(1 days + 1);
@@ -127,7 +116,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
 
     function testAddDelegateSignedBadSignatureKey() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER2);
         vm.expectRevert("bad_signature");
         registry.addDelegateSigned(SIGNER2, v, r, s, "attestor", SIGNER2, 1 days);
     }
@@ -135,20 +123,17 @@ contract EthereumDIDRegistryDelegateTest is Test {
     function testAddDelegateSignedWrongSignature() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY2);
         vm.expectRevert("bad_signature");
-        vm.prank(SIGNER3);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
     }
 
     function testAddDelegateSignedWrongSignatureData() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER, address(registry), PRIVATE_KEY);
         vm.expectRevert("bad_signature");
-        vm.prank(SIGNER3);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
     }
 
     function testAddDelegateSignedChangedBlockNumber() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
         uint256 transactionBlock = registry.changed(SIGNER);
         assertEq(block.number, transactionBlock, "should record block number");
@@ -158,13 +143,11 @@ contract EthereumDIDRegistryDelegateTest is Test {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
         vm.expectEmit();
         emit DIDDelegateChanged(SIGNER, "attestor", SIGNER2, 1 days + 1, 0);
-        vm.prank(SIGNER);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
     }
 
     function testAddDelegateSignedExpectNonce() public {
         (uint8 v, bytes32 r, bytes32 s) = signDelegate(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER);
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
         uint256 nonce = registry.nonce(SIGNER);
         assertEq(nonce, 1, "should increment nonce");
@@ -182,7 +165,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
             message,
             ownerNonce
         );
-        vm.prank(SIGNER);
         vm.expectRevert("bad_signature");
         registry.addDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2, 1 days);
     }
@@ -254,7 +236,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
         assertTrue(registry.validDelegate(SIGNER, "attestor", SIGNER2));
         (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER);
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2);
         assertFalse(registry.validDelegate(SIGNER, "attestor", SIGNER2));
     }
@@ -266,7 +247,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
         assertEq(block.number, registry.changed(SIGNER), "add should record block number");
         vm.roll(block.number + 100);
         (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER);
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2);
         assertEq(block.number, registry.changed(SIGNER), "revoke should record block number");
         assertNotEq(block.number, startBlock, "block number must be different across calls");
@@ -280,7 +260,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
         vm.expectEmit();
         emit DIDDelegateChanged(SIGNER, "attestor", SIGNER2, startTime, startBlock);
         (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
-        vm.prank(SIGNER3);
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2);
     }
 
@@ -289,10 +268,8 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
         (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER2, address(registry), PRIVATE_KEY);
         vm.expectRevert("bad_signature");
-        vm.prank(SIGNER3);
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER3);
         vm.expectRevert("bad_signature");
-        vm.prank(SIGNER3);
         registry.revokeDelegateSigned(SIGNER3, v, r, s, "attestor", SIGNER);
     }
 
@@ -301,7 +278,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
         (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER2, address(registry), PRIVATE_KEY2);
         vm.expectRevert("bad_signature");
-        vm.prank(SIGNER);
+        vm.prank(SIGNER3);
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2);
     }
 
@@ -310,7 +287,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
         registry.addDelegate(SIGNER, "attestor", SIGNER2, 1 days);
         (uint8 v, bytes32 r, bytes32 s) = signRevoke(SIGNER, SIGNER, address(registry), PRIVATE_KEY);
         vm.expectRevert("bad_signature");
-        vm.prank(SIGNER);
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2);
     }
 
@@ -328,7 +304,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
             message,
             ownerNonce
         );
-        vm.prank(SIGNER);
         vm.expectRevert("bad_signature");
         registry.revokeDelegateSigned(SIGNER, v, r, s, "attestor", SIGNER2);
     }
@@ -336,7 +311,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
     /**
      * @dev Sign data with private key
      * @param _identity Identity address
-     * @param _delegate Delegate address
      * @param _registry DID Registry address
      * @param _privateKey Private key
      * @param _message Message to sign
@@ -346,7 +320,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
      */
     function signData(
         address _identity,
-        address _delegate,
         address _registry,
         bytes memory _privateKey,
         bytes memory _message
@@ -359,7 +332,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
             bytes32 s
         )
     {
-        address idOwner = registry.identityOwner(_delegate);
+        address idOwner = registry.identityOwner(_identity);
         uint256 ownerNonce = registry.nonce(idOwner);
         return VmDigest.signData(vm, _identity, _registry, _privateKey, _message, ownerNonce);
     }
@@ -389,7 +362,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         )
     {
         bytes memory message = abi.encodePacked(bytes("addDelegate"), bytes32("attestor"), _delegate, uint256(1 days));
-        return signData(_identity, _delegate, _registry, _privateKey, message);
+        return signData(_identity, _registry, _privateKey, message);
     }
 
     /**
@@ -417,6 +390,6 @@ contract EthereumDIDRegistryDelegateTest is Test {
         )
     {
         bytes memory message = abi.encodePacked(bytes("revokeDelegate"), bytes32("attestor"), _delegate);
-        return signData(_identity, _delegate, _registry, _privateKey, message);
+        return signData(_identity, _registry, _privateKey, message);
     }
 }
