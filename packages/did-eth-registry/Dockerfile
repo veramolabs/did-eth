@@ -63,5 +63,6 @@ RUN yarn prettier:check
 RUN yarn lint
 RUN forge test -v
 RUN forge geiger --check contracts/*.sol
+RUN forge coverage
 
 USER did

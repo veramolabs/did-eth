@@ -77,6 +77,19 @@
             }
         },
         {
+            "label": "coverage",
+            "type": "shell",
+            "command": "forge coverage",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "lint",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
             "label": "gas",
             "type": "shell",
             "command": "forge test --gas-report",
