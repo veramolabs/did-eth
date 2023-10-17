@@ -5,14 +5,13 @@ const { Transaction } = require('ethereumjs-tx')
 const EthUtils = require('ethereumjs-util')
 const ls = require('ls')
 const path = require('path')
-const ethers = require('ethers')
 
 const gasLimits = {
   EthereumDIDRegistry: 2811144, // If this value needs to be recalculated, it can be done by deploying the rawTx once and looking at gasUsed in the receipt
 }
 
 const generateDeployTx = (code, name) => {
-  console.log("go gen.")
+  console.log('go gen.')
   const rawTx = {
     nonce: 0,
     gasPrice: 100000000000, // 100 Gwei
@@ -21,7 +20,7 @@ const generateDeployTx = (code, name) => {
     data: code,
     v: 27,
     r: '0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798',
-    s: '0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+    s: '0x0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
   }
   const tx = new Transaction(rawTx)
   const res = {

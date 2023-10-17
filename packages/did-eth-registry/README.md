@@ -304,6 +304,30 @@ needed. The list of delegateTypes to include is still to be determined.
 Iterate through `DIDAttributeChanged` events for service entries, encrypted public keys, and other public names. The
 attribute names are still to be determined.
 
+## Quick Start
+
+### Submodules
+
+First, init submodules from the project root
+
+```bash
+$ git submodule update --recursive --init -f
+```
+
+### Registry Development
+
+This contract supports containerized development. From Visual Studio Code Remote Containers extension
+
+`Reopen in Container`
+
+or
+
+Command line build using docker
+
+```bash
+$ docker build packages/did-eth-registry -t did-eth:1
+```
+
 ## Deploy contract
 
 First run,
@@ -324,7 +348,8 @@ Once this funding transaction is confirmed, simply send the `rawTx` to the same 
 ## Testing the Contracts
 
 ```bash
-yarn install
-yarn build
-yarn test
+$ yarn install --frozen-lockfile
+$ yarn prettier:check
+$ yarn lint
+$ forge test -v
 ```

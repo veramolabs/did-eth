@@ -44,9 +44,9 @@ contract EthereumDIDRegistry {
         uint8 sigV,
         bytes32 sigR,
         bytes32 sigS,
-        bytes32 hash
+        bytes32 digest
     ) internal returns (address) {
-        address signer = ecrecover(hash, sigV, sigR, sigS);
+        address signer = ecrecover(digest, sigV, sigR, sigS);
         require(signer == identityOwner(identity), "bad_signature");
         nonce[signer]++;
         return signer;
@@ -82,7 +82,7 @@ contract EthereumDIDRegistry {
         bytes32 sigS,
         address newOwner
     ) public {
-        bytes32 hash = keccak256(
+        bytes32 digest = keccak256(
             abi.encodePacked(
                 bytes1(0x19),
                 bytes1(0),
@@ -93,7 +93,7 @@ contract EthereumDIDRegistry {
                 newOwner
             )
         );
-        changeOwner(identity, checkSignature(identity, sigV, sigR, sigS, hash), newOwner);
+        changeOwner(identity, checkSignature(identity, sigV, sigR, sigS, digest), newOwner);
     }
 
     function addDelegate(
@@ -126,7 +126,7 @@ contract EthereumDIDRegistry {
         address delegate,
         uint256 validity
     ) public {
-        bytes32 hash = keccak256(
+        bytes32 digest = keccak256(
             abi.encodePacked(
                 bytes1(0x19),
                 bytes1(0),
@@ -139,7 +139,7 @@ contract EthereumDIDRegistry {
                 validity
             )
         );
-        addDelegate(identity, checkSignature(identity, sigV, sigR, sigS, hash), delegateType, delegate, validity);
+        addDelegate(identity, checkSignature(identity, sigV, sigR, sigS, digest), delegateType, delegate, validity);
     }
 
     function revokeDelegate(
@@ -169,7 +169,7 @@ contract EthereumDIDRegistry {
         bytes32 delegateType,
         address delegate
     ) public {
-        bytes32 hash = keccak256(
+        bytes32 digest = keccak256(
             abi.encodePacked(
                 bytes1(0x19),
                 bytes1(0),
@@ -181,7 +181,7 @@ contract EthereumDIDRegistry {
                 delegate
             )
         );
-        revokeDelegate(identity, checkSignature(identity, sigV, sigR, sigS, hash), delegateType, delegate);
+        revokeDelegate(identity, checkSignature(identity, sigV, sigR, sigS, digest), delegateType, delegate);
     }
 
     function setAttribute(
@@ -213,7 +213,7 @@ contract EthereumDIDRegistry {
         bytes memory value,
         uint256 validity
     ) public {
-        bytes32 hash = keccak256(
+        bytes32 digest = keccak256(
             abi.encodePacked(
                 bytes1(0x19),
                 bytes1(0),
@@ -226,7 +226,7 @@ contract EthereumDIDRegistry {
                 validity
             )
         );
-        setAttribute(identity, checkSignature(identity, sigV, sigR, sigS, hash), name, value, validity);
+        setAttribute(identity, checkSignature(identity, sigV, sigR, sigS, digest), name, value, validity);
     }
 
     function revokeAttribute(
@@ -255,7 +255,7 @@ contract EthereumDIDRegistry {
         bytes32 name,
         bytes memory value
     ) public {
-        bytes32 hash = keccak256(
+        bytes32 digest = keccak256(
             abi.encodePacked(
                 bytes1(0x19),
                 bytes1(0),
@@ -267,6 +267,6 @@ contract EthereumDIDRegistry {
                 value
             )
         );
-        revokeAttribute(identity, checkSignature(identity, sigV, sigR, sigS, hash), name, value);
+        revokeAttribute(identity, checkSignature(identity, sigV, sigR, sigS, digest), name, value);
     }
 }

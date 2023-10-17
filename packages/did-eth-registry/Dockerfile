@@ -61,7 +61,8 @@ COPY --chown=did:did . .
 RUN yarn install --frozen-lockfile
 RUN yarn prettier:check
 RUN yarn lint
-RUN yarn build
-RUN yarn test
+RUN forge test -v
+RUN forge geiger --check contracts/*.sol
+RUN forge coverage
 
 USER did

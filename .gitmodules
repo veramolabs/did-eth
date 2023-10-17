@@ -1,0 +1,4 @@
+[submodule "packages/did-eth-registry/lib/forge-std"]
+	path = packages/did-eth-registry/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+	branch = v1.6.1
