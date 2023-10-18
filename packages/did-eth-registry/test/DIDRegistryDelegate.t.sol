@@ -4,11 +4,11 @@ pragma solidity ^0.8.15;
 import { VmSafe } from "forge-std/Vm.sol";
 import { Test } from "forge-std/Test.sol";
 
-import { EthereumDIDRegistry } from "../contracts/EthereumDIDRegistry.sol";
+import { DIDRegistry } from "../contracts/DIDRegistry.sol";
 
 import { VmDigest } from "./VmDigest.sol";
 
-contract EthereumDIDRegistryDelegateTest is Test {
+contract DIDRegistryDelegateTest is Test {
     event DIDDelegateChanged(
         address indexed identity,
         bytes32 delegateType,
@@ -17,7 +17,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
         uint256 previousChange
     );
 
-    EthereumDIDRegistry public registry;
+    DIDRegistry public registry;
 
     bytes internal constant PRIVATE_KEY = hex"a285ab66393c5fdda46d6fbad9e27fafd438254ab72ad5acb681a0e9f20f5d7b";
     address internal constant SIGNER = 0x2036C6CD85692F0Fb2C26E6c6B2ECed9e4478Dfd;
@@ -28,7 +28,7 @@ contract EthereumDIDRegistryDelegateTest is Test {
     address internal constant SIGNER3 = address(0x1111);
 
     function setUp() public {
-        registry = new EthereumDIDRegistry();
+        registry = new DIDRegistry();
     }
 
     function testAddDelegate() public {

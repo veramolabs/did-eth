@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 import { Test } from "forge-std/Test.sol";
 import { VmDigest } from "./VmDigest.sol";
 
-contract EthereumDIDRegistryTest is Test {
+contract DIDRegistryTest is Test {
     function testToUint256() public {
         bytes memory b1 = hex"10";
         bytes memory b2 = hex"1000";

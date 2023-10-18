@@ -57,14 +57,14 @@ To use the contract, we provide hardhat artifacts. Once you require the `ethr-di
 object containing the JSON.
 
 ```javascript
-const { EthereumDIDRegistry } = require('ethr-did-registry')
+const { DIDRegistry } = require('ethr-did-registry')
 ```
 
 You can use [`ethers.js`](https://github.com/ethers-io/ethers.js/) to utilize these artifacts.
 
 ```javascript
 const { ethers } = require('ethers')
-const DidReg = new ethers.Contract(registryAddress, EthereumDIDRegistry.abi)
+const DidReg = new ethers.Contract(registryAddress, DIDRegistry.abi)
 DidReg.connect(yourSignerOrProvider)
 ```
 

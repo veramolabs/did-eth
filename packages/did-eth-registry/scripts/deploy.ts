@@ -14,7 +14,7 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const RegistryContract = await ethers.getContractFactory('EthereumDIDRegistry')
+  const RegistryContract = await ethers.getContractFactory('DIDRegistry')
   const contractInstance = await RegistryContract.deploy()
 
   await contractInstance.deployed()

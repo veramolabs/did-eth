@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.6;
 
-contract EthereumDIDRegistry {
+contract DIDRegistry {
     mapping(address => address) public owners;
     mapping(address => mapping(bytes32 => mapping(address => uint256))) public delegates;
     mapping(address => uint256) public changed;
