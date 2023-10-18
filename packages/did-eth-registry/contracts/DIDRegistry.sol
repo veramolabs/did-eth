@@ -1,12 +1,14 @@
-/* SPDX-License-Identifier: MIT */
+// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.15;
+
+import { EIP1056Registry } from "./EIP1056Registry.sol";
 
 /**
  * @title DIDRegistry
  * @dev The DIDRegistry contract is a registry of decentralized identifiers (DIDs) and their attributes.
  */
-contract DIDRegistry {
+contract DIDRegistry is EIP1056Registry {
     mapping(address => address) public owners;
     mapping(address => mapping(bytes32 => mapping(address => uint256))) public delegates;
     mapping(address => uint256) public changed;
@@ -16,24 +18,6 @@ contract DIDRegistry {
         require(actor == identityOwner(identity), "bad_actor");
         _;
     }
-
-    event DIDOwnerChanged(address indexed identity, address owner, uint256 previousChange);
-
-    event DIDDelegateChanged(
-        address indexed identity,
-        bytes32 delegateType,
-        address delegate,
-        uint256 validTo,
-        uint256 previousChange
-    );
-
-    event DIDAttributeChanged(
-        address indexed identity,
-        bytes32 name,
-        bytes value,
-        uint256 validTo,
-        uint256 previousChange
-    );
 
     /**
      * Return the current owner of an identity.
