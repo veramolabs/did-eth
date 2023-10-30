@@ -54,7 +54,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param newOwner address of the new owner
      */
     function changeOwner(address identity, address newOwner) public {
-        changeOwner(identity, msg.sender, newOwner);
+        _changeOwner(identity, msg.sender, newOwner);
     }
 
     /**
@@ -83,7 +83,7 @@ contract DIDRegistry is EIP1056Registry {
                 newOwner
             )
         );
-        changeOwner(identity, checkSignature(identity, sigV, sigR, sigS, digest), newOwner);
+        _changeOwner(identity, _checkSignature(identity, sigV, sigR, sigS, digest), newOwner);
     }
 
     /**
@@ -99,7 +99,7 @@ contract DIDRegistry is EIP1056Registry {
         address delegate,
         uint256 validity
     ) public {
-        addDelegate(identity, msg.sender, delegateType, delegate, validity);
+        _addDelegate(identity, msg.sender, delegateType, delegate, validity);
     }
 
     /**
@@ -134,7 +134,7 @@ contract DIDRegistry is EIP1056Registry {
                 validity
             )
         );
-        addDelegate(identity, checkSignature(identity, sigV, sigR, sigS, digest), delegateType, delegate, validity);
+        _addDelegate(identity, _checkSignature(identity, sigV, sigR, sigS, digest), delegateType, delegate, validity);
     }
 
     /**
@@ -148,7 +148,7 @@ contract DIDRegistry is EIP1056Registry {
         bytes32 delegateType,
         address delegate
     ) public {
-        revokeDelegate(identity, msg.sender, delegateType, delegate);
+        _revokeDelegate(identity, msg.sender, delegateType, delegate);
     }
 
     /**
@@ -180,7 +180,7 @@ contract DIDRegistry is EIP1056Registry {
                 delegate
             )
         );
-        revokeDelegate(identity, checkSignature(identity, sigV, sigR, sigS, digest), delegateType, delegate);
+        _revokeDelegate(identity, _checkSignature(identity, sigV, sigR, sigS, digest), delegateType, delegate);
     }
 
     /**
@@ -196,7 +196,7 @@ contract DIDRegistry is EIP1056Registry {
         bytes memory value,
         uint256 validity
     ) public {
-        setAttribute(identity, msg.sender, name, value, validity);
+        _setAttribute(identity, msg.sender, name, value, validity);
     }
 
     /**
@@ -231,7 +231,7 @@ contract DIDRegistry is EIP1056Registry {
                 validity
             )
         );
-        setAttribute(identity, checkSignature(identity, sigV, sigR, sigS, digest), name, value, validity);
+        _setAttribute(identity, _checkSignature(identity, sigV, sigR, sigS, digest), name, value, validity);
     }
 
     /**
@@ -245,7 +245,7 @@ contract DIDRegistry is EIP1056Registry {
         bytes32 name,
         bytes memory value
     ) public {
-        revokeAttribute(identity, msg.sender, name, value);
+        _revokeAttribute(identity, msg.sender, name, value);
     }
 
     /**
@@ -277,7 +277,7 @@ contract DIDRegistry is EIP1056Registry {
                 value
             )
         );
-        revokeAttribute(identity, checkSignature(identity, sigV, sigR, sigS, digest), name, value);
+        _revokeAttribute(identity, _checkSignature(identity, sigV, sigR, sigS, digest), name, value);
     }
 
     /**
@@ -288,7 +288,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param sigS signature S
      * @param digest digest of the message
      */
-    function checkSignature(
+    function _checkSignature(
         address identity,
         uint8 sigV,
         bytes32 sigR,
@@ -307,7 +307,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param actor address of the actor
      * @param newOwner address of the new owner
      */
-    function changeOwner(
+    function _changeOwner(
         address identity,
         address actor,
         address newOwner
@@ -325,7 +325,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param delegate address of the delegate
      * @param validity expiration of the delegate in epoch seconds
      */
-    function addDelegate(
+    function _addDelegate(
         address identity,
         address actor,
         bytes32 delegateType,
@@ -344,7 +344,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param delegateType type of the delegate
      * @param delegate address of the delegate
      */
-    function revokeDelegate(
+    function _revokeDelegate(
         address identity,
         address actor,
         bytes32 delegateType,
@@ -363,7 +363,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param value value of the attribute
      * @param validity expiration of the attribute in epoch seconds
      */
-    function setAttribute(
+    function _setAttribute(
         address identity,
         address actor,
         bytes32 name,
@@ -381,7 +381,7 @@ contract DIDRegistry is EIP1056Registry {
      * @param name name of the attribute
      * @param value value of the attribute
      */
-    function revokeAttribute(
+    function _revokeAttribute(
         address identity,
         address actor,
         bytes32 name,
