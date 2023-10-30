@@ -8,6 +8,9 @@ pragma solidity ^0.8.15;
  * https://eips.ethereum.org/EIPS/eip-1056
  */
 interface EIP1056Registry {
+    /**
+     * Signals a change of ownership for an identity.
+     */
     event DIDOwnerChanged(address indexed identity, address owner, uint256 previousChange);
 
     /**
