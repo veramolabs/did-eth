@@ -33,11 +33,11 @@ contract DIDRegistry is EIP1056Registry {
     }
 
     /**
-     * Return the current delegate of an identity for a specific delegate type.
-     * @param identity The identity to check.
-     * @param delegateType The type of the delegate.
-     * @param delegate The address of the delegate.
-     * @return bool The address of the current delegate.
+     * Determines if a specific address is currently listed as a delegate for a given identity and type of delegation.
+     * @param identity - The identity to check.
+     * @param delegateType - The type of the delegation being checked.
+     * @param delegate - The address of the delegate.
+     * @return bool - true if the delegation is currently valid, false otherwise.
      */
     function validDelegate(
         address identity,
