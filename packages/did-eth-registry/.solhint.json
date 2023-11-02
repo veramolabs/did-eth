@@ -1,8 +1,16 @@
 {
   "extends": "solhint:recommended",
   "rules": {
-    "compiler-version": ["error", "^0.8.0"],
-    "func-visibility": ["warn", { "ignoreConstructors": true }],
+    "compiler-version": [
+      "error",
+      "^0.8.15"
+    ],
+    "func-visibility": [
+      "warn",
+      {
+        "ignoreConstructors": true
+      }
+    ],
     "not-rely-on-time": "off"
   }
 }

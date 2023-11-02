@@ -7,7 +7,7 @@ const ls = require('ls')
 const path = require('path')
 
 const gasLimits = {
-  EthereumDIDRegistry: 2811144, // If this value needs to be recalculated, it can be done by deploying the rawTx once and looking at gasUsed in the receipt
+  DIDRegistry: 2811144, // If this value needs to be recalculated, it can be done by deploying the rawTx once and looking at gasUsed in the receipt
 }
 
 const generateDeployTx = (code, name) => {
