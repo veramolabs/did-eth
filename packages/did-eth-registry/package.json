@@ -3,6 +3,24 @@
   "version": "0.0.1",
   "description": "A repository storing keys and other data about Ethereum Decentralized Identifiers (DIDs)",
   "main": "./dist/index.js",
+  "scripts": {
+    "build:js": "tsc",
+    "build:sol": "hardhat compile",
+    "build": "yarn build:sol && yarn build:js",
+    "test": "hardhat test",
+    "prettier:check": "prettier --check '(contracts|test|script)/**.sol'",
+    "prettier:fix": "prettier --write '(contracts|test|script)/**.sol'",
+    "lint:js": "npx eslint '**/*.{js,ts}' --fix",
+    "lint:sol": "npx solhint 'contracts/**/*.sol' --fix",
+    "lint": "yarn lint:sol && yarn lint:js",
+    "format": "prettier -w '**/*.{ts,js,json,md}'",
+    "prepublishOnly": "yarn test && yarn format && yarn lint",
+    "release": "semantic-release --debug",
+    "dumpregistry": "forge script ./script/DeployRegistry.s.sol --sig 'dumpRegistry()'",
+    "dumpproxy": "forge script ./script/DeployRegistry.s.sol --sig 'dumpProxy()'",
+    "registryaddress": "cast create2 --starts-with 0xd1d836 --deployer 0x4e59b44847b379578588920cA78FbF26c0B4956C --init-code $(cat DIDRegistry.bin)",
+    "vanity": "cast create2 --starts-with 0xd1d374 --ends-with 00 --deployer 0x4e59b44847b379578588920cA78FbF26c0B4956C --init-code $(cat EIP1056RegistryProxy.bin)"
+  },
   "exports": "./dist/index.js",
   "typesVersions": {
     "*": {
@@ -61,24 +79,11 @@
     "typescript": "^4.7.4",
     "uint8arrays": "^3.0.0"
   },
-  "scripts": {
-    "build:js": "tsc",
-    "build:sol": "hardhat compile",
-    "build": "yarn build:sol && yarn build:js",
-    "test": "hardhat test",
-    "prettier:check": "prettier --check '(contracts|test|script)/**.sol'",
-    "prettier:fix": "prettier --write '(contracts|test|script)/**.sol'",
-    "lint:js": "npx eslint '**/*.{js,ts}' --fix",
-    "lint:sol": "npx solhint 'contracts/**/*.sol' --fix",
-    "lint": "yarn lint:sol && yarn lint:js",
-    "format": "prettier -w '**/*.{ts,js,json,md}'",
-    "prepublishOnly": "yarn test && yarn format && yarn lint",
-    "release": "semantic-release --debug"
-  },
   "author": "Pelle Braendgaard",
   "contributors": [
     "Mircea Nistor <mirceanis@gmail.com>",
-    "Nick Reynolds <nick.reynolds@gmail.com>"
+    "Nick Reynolds <nick.reynolds@gmail.com>",
+    "John Cairns <john@xmtp.com>"
   ],
   "license": "MIT",
   "repository": {

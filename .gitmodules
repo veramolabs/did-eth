@@ -2,3 +2,6 @@
 	path = packages/did-eth-registry/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
 	branch = v1.6.1
+[submodule "packages/did-eth-registry/lib/openzeppelin-contracts"]
+	path = packages/did-eth-registry/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts

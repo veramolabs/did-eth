@@ -4,3 +4,5 @@ build/
 typechain/
 typechain-types/
 dist/
+EIP1056Registry.json
+DIDRegistry.bin
