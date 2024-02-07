@@ -14,20 +14,22 @@
 				"JuanBlanco.solidity"
 			]
 		}
+	},
+	"containerEnv": {
+		"PRIVATE_KEY": "${localEnv:PRIVATE_KEY}",
+		"PUBLIC_KEY": "${localEnv:PUBLIC_KEY}",
+		"GOERLI_URL": "${localEnv:GOERLI_URL}",
+		"RPC_URL": "${localEnv:RPC_URL}",
+		"ETHERSCAN_API_KEY": "${localEnv:ETHERSCAN_API_KEY}"
 	}
-
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "cat /etc/os-release",
-
 	// Configure tool-specific properties.
 	// "customizations": {},
-
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
 }

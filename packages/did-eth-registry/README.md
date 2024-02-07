@@ -304,7 +304,14 @@ needed. The list of delegateTypes to include is still to be determined.
 Iterate through `DIDAttributeChanged` events for service entries, encrypted public keys, and other public names. The
 attribute names are still to be determined.
 
-## Quick Start
+## Deployment Address
+
+| Contract        | Ethereum Address                           | Network                                                                                    |
+| --------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| EIP1056Registry | 0xd1D374DDE031075157fDb64536eF5cC13Ae75000 | [Sepolia](https://sepolia.etherscan.io/address/0xd1d374dde031075157fdb64536ef5cc13ae75000) |
+| EIP1056Registry | 0xd1D374DDE031075157fDb64536eF5cC13Ae75000 | [Görli](https://goerli.etherscan.io/address/0xd1d374dde031075157fdb64536ef5cc13ae75000)    |
+
+## Quick Start (Development)
 
 ### Submodules
 
@@ -314,9 +321,9 @@ First, init submodules from the project root
 $ git submodule update --recursive --init -f
 ```
 
-### Registry Development
+### Dev Containers Development
 
-This contract supports containerized development. From Visual Studio Code Remote Containers extension
+This contract supports containerized development. From Visual Studio Code Dev Containers extension
 
 `Reopen in Container`
 
@@ -328,28 +335,75 @@ Command line build using docker
 $ docker build packages/did-eth-registry -t did-eth:1
 ```
 
-## Deploy contract
-
-First run,
-
-```bash
-$ scripts/generateDeployTxs.js
-```
-
-You will get the data needed to deploy as an output from this command.
-
-Copy the `senderAddress` and send `cost` amount of ether to that address on the Ethereum network you wish to deploy to.
-
-Once this funding transaction is confirmed, simply send the `rawTx` to the same network.
-`contractAddress` is the address of the deployed contract.
-
-`chainId` is intentionally not used in the transaction to make it simpler to deploy to the same address on all networks.
-
 ## Testing the Contracts
+
+From the containerized environment:
 
 ```bash
 $ yarn install --frozen-lockfile
 $ yarn prettier:check
 $ yarn lint
-$ forge test -v
+$ forge test -vvv
+```
+
+## Initial Deployment
+
+### Using vanity address
+
+1\. dump out registry init code
+
+```bash
+$ yarn dumpregistry
+```
+
+2\. compute the address for the registry
+
+```bash
+$ yarn registryaddress
+```
+
+Make a note of the registry address and registry salt. Convert the salt to a 32 byte hex string using `cast --tobase`
+
+```bash
+$ cast --to-base 74093810807909736385031531802484957602545215186873255285560364360670735082938 16
+0xa3cf9c5bc4043744d6ce20e743000b2a92113cff47d618a20365366f8729a5ba
+```
+
+3\. dump out the proxy init code
+
+```bash
+CONTRACT_ROLE_ADMIN=0x521DBc90a1687d0ed050Cf4ba47d5A04d8253f46 \
+REGISTRY_ADDRESS=0xD1D8360742139fD76C16c397A4d5ECA9E2A73c4b \
+yarn dumpproxy
+```
+
+4\. run the create2 function to choose a vanity address for the proxy
+
+```bash
+$ yarn vanity
+```
+
+Make a note of the salt for the proxy contract. Convert the salt to a 32 byte hex string using cast --to-base
+
+```bash
+cast --to-base 75226583542044164422273476230409956855417563147003477807955548159938739788128 16
+0xa650bcc7b18a1b8ee999056c89f3adbe79f5c69bcc68f164e9760a0e0e1b5960
+```
+
+5.  Deploy the registry and proxy
+
+```bash
+$ CONTRACT_ROLE_ADMIN=0x521DBc90a1687d0ed050Cf4ba47d5A04d8253f46 \
+CONTRACT_ROLE_UPGRADE="0x521DBc90a1687d0ed050Cf4ba47d5A04d8253f46,0x2746bC0bE84D7CC9A63526C02746d12FA20621F3" \
+CONTRACT_SALT=0xa650bcc7b18a1b8ee999056c89f3adbe79f5c69bcc68f164e9760a0e0e1b5960 \
+REGISTRY_SALT=0xa3cf9c5bc4043744d6ce20e743000b2a92113cff47d618a20365366f8729a5ba \
+forge script ./script/DeployRegistry.s.sol:DeployRegistry --sig 'deploy()' --slow --broadcast --rpc-url ${RPC_URL} --private-key ${PRIVATE_KEY} --etherscan-api-key ${ETHERSCAN_API_KEY} --verify
+```
+
+### Upgrade Deployment
+
+Post initial deployment, the contract can be upgraded directly through the [UUPSUpgradeable](https://docs.openzeppelin.com/contracts/4.x/api/proxy#UUPSUpgradeable) interface
+
+```solidity
+   registry.upgradeToAndCall(address(logic), "");
 ```

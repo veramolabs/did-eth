@@ -90,6 +90,97 @@
             }
         },
         {
+            "label": "dumpregistry",
+            "type": "shell",
+            "command": "yarn dumpregistry",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "dumpproxy",
+            "type": "shell",
+            "command": "yarn dumpproxy",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "CONTRACT_ROLE_ADMIN": "0x6CEb0bF1f28ca4165d5C0A04f61DC733987eD6ad",
+                    "REGISTRY_ADDRESS": "0xD1D8360742139fD76C16c397A4d5ECA9E2A73c4b"
+                }
+            },
+            "dependsOn": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "registryaddress",
+            "type": "shell",
+            "command": "yarn registryaddress",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "dumpregistry",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "vanity",
+            "type": "shell",
+            "command": "yarn vanity",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn": "dumpproxy",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            }
+        },
+        {
+            "label": "deployregistry",
+            "type": "shell",
+            "command": "forge script ./script/DeployRegistry.s.sol:DeployRegistry --sig 'deploy()' --slow --broadcast --rpc-url ${GOERLI_URL} --private-key ${PRIVATE_KEY} --etherscan-api-key ${ETHERSCAN_API_KEY} --verify",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "CONTRACT_ROLE_ADMIN": "0x6CEb0bF1f28ca4165d5C0A04f61DC733987eD6ad",
+                    "CONTRACT_ROLE_UPGRADE": "0x6CEb0bF1f28ca4165d5C0A04f61DC733987eD6ad,0x22A653801bB0bb85BE38765cC072144736635eE8",
+                    "CONTRACT_SALT": "0xa650bcc7b18a1b8ee999056c89f3adbe79f5c69bcc68f164e9760a0e0e1b5960",
+                    "REGISTRY_SALT": "0xa3cf9c5bc4043744d6ce20e743000b2a92113cff47d618a20365366f8729a5ba"
+                }
+            },
+            "dependsOn": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+        },
+        {
+            "label": "upgraderegistry",
+            "type": "shell",
+            "command": "forge script ./script/DeployRegistry.s.sol:DeployRegistry --sig 'upgrade()' --slow --broadcast --rpc-url ${RPC_URL} --private-key ${PRIVATE_KEY} --etherscan-api-key ${ETHERSCAN_API_KEY} --verify",
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "PROXY_ADDRESS": "0xd1D374DDE031075157fDb64536eF5cC13Ae75000"
+                }
+            },
+            "dependsOn": "test",
+            "group": {
+                "kind": "test",
+                "isDefault": false
+            },
+        },
+        {
             "label": "gas",
             "type": "shell",
             "command": "forge test --gas-report",

@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.15;
+pragma solidity ^0.8.20;
+
+import { IAccessControl } from "@openzeppelin/contracts/access/IAccessControl.sol";
+import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
+import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import { UUPSUpgradeable } from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import { IERC165 } from "@openzeppelin/contracts/interfaces/IERC165.sol";
+import { ERC165 } from "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 
 import { EIP1056Registry } from "./EIP1056Registry.sol";
 
@@ -8,7 +15,9 @@ import { EIP1056Registry } from "./EIP1056Registry.sol";
  * @title DIDRegistry
  * @dev The DIDRegistry contract is a registry of decentralized identifiers (DIDs) and their attributes.
  */
-contract DIDRegistry is EIP1056Registry {
+contract DIDRegistry is EIP1056Registry, Initializable, UUPSUpgradeable, AccessControl {
+    bytes32 public constant REGISTRY_ADMIN_ROLE = keccak256("REGISTRY_ADMIN_ROLE");
+
     mapping(address => address) public owners;
     mapping(address => mapping(bytes32 => mapping(address => uint256))) public delegates;
     mapping(address => uint256) public changed;
@@ -17,6 +26,16 @@ contract DIDRegistry is EIP1056Registry {
     modifier onlyOwner(address identity, address actor) {
         require(actor == identityOwner(identity), "bad_actor");
         _;
+    }
+
+    /// @dev constructor is forbidden for upgradeable contracts
+    constructor() {
+        _disableInitializers();
+    }
+
+    /// @dev initializer is required for proxy contracts
+    function initialize(address _roleAdmin) public initializer {
+        _grantRole(DEFAULT_ADMIN_ROLE, _roleAdmin);
     }
 
     /**
@@ -278,6 +297,23 @@ contract DIDRegistry is EIP1056Registry {
             )
         );
         _revokeAttribute(identity, _checkSignature(identity, sigV, sigR, sigS, digest), name, value);
+    }
+
+    /**
+     * @notice authorize code upgrade or revert
+     * @dev required by UUPSUpgradeable
+     */
+    // solhint-disable-next-line no-empty-blocks
+    function _authorizeUpgrade(address) internal override onlyRole(REGISTRY_ADMIN_ROLE) {}
+
+    /**
+     * @dev required by ERC165
+     */
+    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControl) returns (bool) {
+        return
+            interfaceId == type(EIP1056Registry).interfaceId ||
+            interfaceId == type(IAccessControl).interfaceId ||
+            super.supportsInterface(interfaceId);
     }
 
     /**

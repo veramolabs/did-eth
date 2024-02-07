@@ -183,3 +183,9 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node,intellij
+
+broadcast/
+
+EIP1056Registry.json
+EIP1056RegistryProxy.bin
+DIDRegistry.bin
